@@ -8,20 +8,31 @@
 
 /* Begin PBXBuildFile section */
 		188D73592138EE330008D5B0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188D73582138EE330008D5B0 /* AppDelegate.swift */; };
-		188D735B2138EE330008D5B0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188D735A2138EE330008D5B0 /* ViewController.swift */; };
+		188D735B2138EE330008D5B0 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188D735A2138EE330008D5B0 /* HomeViewController.swift */; };
 		188D735E2138EE330008D5B0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 188D735C2138EE330008D5B0 /* Main.storyboard */; };
 		188D73602138EE390008D5B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 188D735F2138EE390008D5B0 /* Assets.xcassets */; };
 		188D73632138EE390008D5B0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 188D73612138EE390008D5B0 /* LaunchScreen.storyboard */; };
+		188D736C213A06760008D5B0 /* HomeCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188D736B213A06760008D5B0 /* HomeCellView.swift */; };
+		188D736E213AC4730008D5B0 /* UIView+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188D736D213AC4730008D5B0 /* UIView+Custom.swift */; };
+		188D7373213B9E390008D5B0 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188D7372213B9E390008D5B0 /* MenuBarView.swift */; };
+		188D7375213BA1BE0008D5B0 /* UIColor+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188D7374213BA1BE0008D5B0 /* UIColor+Custom.swift */; };
+		188D7377213CBF970008D5B0 /* BaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188D7376213CBF970008D5B0 /* BaseCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		188D73552138EE330008D5B0 /* WeTubeFaking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeTubeFaking.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		188D73582138EE330008D5B0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		188D735A2138EE330008D5B0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		188D735A2138EE330008D5B0 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		188D735D2138EE330008D5B0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		188D735F2138EE390008D5B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		188D73622138EE390008D5B0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		188D73642138EE390008D5B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		188D736A2138EE5C0008D5B0 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		188D736B213A06760008D5B0 /* HomeCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCellView.swift; sourceTree = "<group>"; };
+		188D736D213AC4730008D5B0 /* UIView+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Custom.swift"; sourceTree = "<group>"; };
+		188D7372213B9E390008D5B0 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		188D7374213BA1BE0008D5B0 /* UIColor+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Custom.swift"; sourceTree = "<group>"; };
+		188D7376213CBF970008D5B0 /* BaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +49,7 @@
 		188D734C2138EE330008D5B0 = {
 			isa = PBXGroup;
 			children = (
+				188D736A2138EE5C0008D5B0 /* README.md */,
 				188D73572138EE330008D5B0 /* WeTubeFaking */,
 				188D73562138EE330008D5B0 /* Products */,
 			);
@@ -54,14 +66,43 @@
 		188D73572138EE330008D5B0 /* WeTubeFaking */ = {
 			isa = PBXGroup;
 			children = (
+				188D7371213B9D610008D5B0 /* Helpers */,
+				188D7370213B9D550008D5B0 /* View */,
+				188D736F213B9D440008D5B0 /* ViewController */,
 				188D73582138EE330008D5B0 /* AppDelegate.swift */,
-				188D735A2138EE330008D5B0 /* ViewController.swift */,
 				188D735C2138EE330008D5B0 /* Main.storyboard */,
 				188D735F2138EE390008D5B0 /* Assets.xcassets */,
 				188D73612138EE390008D5B0 /* LaunchScreen.storyboard */,
 				188D73642138EE390008D5B0 /* Info.plist */,
 			);
 			path = WeTubeFaking;
+			sourceTree = "<group>";
+		};
+		188D736F213B9D440008D5B0 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				188D735A2138EE330008D5B0 /* HomeViewController.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		188D7370213B9D550008D5B0 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				188D736B213A06760008D5B0 /* HomeCellView.swift */,
+				188D7372213B9E390008D5B0 /* MenuBarView.swift */,
+				188D7376213CBF970008D5B0 /* BaseCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		188D7371213B9D610008D5B0 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				188D736D213AC4730008D5B0 /* UIView+Custom.swift */,
+				188D7374213BA1BE0008D5B0 /* UIColor+Custom.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,8 +176,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				188D735B2138EE330008D5B0 /* ViewController.swift in Sources */,
+				188D736C213A06760008D5B0 /* HomeCellView.swift in Sources */,
+				188D736E213AC4730008D5B0 /* UIView+Custom.swift in Sources */,
+				188D7375213BA1BE0008D5B0 /* UIColor+Custom.swift in Sources */,
+				188D735B2138EE330008D5B0 /* HomeViewController.swift in Sources */,
+				188D7377213CBF970008D5B0 /* BaseCell.swift in Sources */,
 				188D73592138EE330008D5B0 /* AppDelegate.swift in Sources */,
+				188D7373213B9E390008D5B0 /* MenuBarView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

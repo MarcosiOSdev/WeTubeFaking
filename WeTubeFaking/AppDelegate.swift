@@ -15,7 +15,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.makeKeyAndVisible()
+        let rootVC = HomeViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        window?.rootViewController = UINavigationController(rootViewController: rootVC)
+        
+        //Navigation with red Color
+        UINavigationBar.appearance().barTintColor = UIColor.rgb(red: 230, green: 32, blue: 31)
+        
+        //get ride of line underneath navbar
+        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        
+        
+        //StatusBar with white color and background dark red
+        application.statusBarStyle = .lightContent
+        let statusBarBackground = UIView()
+        statusBarBackground.backgroundColor = UIColor.rgb(red: 194, green: 31, blue: 31)
+        window?.addSubview(statusBarBackground)
+        window?.addConstraintsWithFormat("H:|[v0]|", views: statusBarBackground)
+        window?.addConstraintsWithFormat("V:|[v0(20)]|", views: statusBarBackground)
+        
         return true
     }
 
