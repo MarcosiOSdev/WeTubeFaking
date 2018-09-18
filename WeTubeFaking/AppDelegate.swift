@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         
         
-        //StatusBar with white color and background dark red
+		//StatusBar with white color and background dark red
         application.statusBarStyle = .lightContent
         let statusBarBackground = UIView()
         statusBarBackground.backgroundColor = UIColor.rgb(red: 194, green: 31, blue: 31)
@@ -37,6 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.addConstraintsWithFormat("H:|[v0]|", views: statusBarBackground)
         window?.addConstraintsWithFormat("V:|[v0(20)]|", views: statusBarBackground)
         
+        //TODO: `safeAreaLayoutGuide` se iOS >= 11, `topLayoutGuide`
         return true
     }
 

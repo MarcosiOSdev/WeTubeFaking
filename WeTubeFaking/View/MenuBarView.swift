@@ -27,6 +27,11 @@ class MenuBarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource,
         super.init(frame: frame)
         addSubview(collectionView)
         collectionView.register(MenuCellView.self, forCellWithReuseIdentifier: cellId)
+        
+        //Seleciona o primeiro tabbar
+        let selectedIndexPath = IndexPath(item: 0, section: 0)
+        collectionView.selectItem(at: selectedIndexPath, animated: false, scrollPosition: .top)
+        
         setupConstraints()
     }
     
@@ -35,16 +40,13 @@ class MenuBarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource,
     }
     
     fileprivate func setupConstraints() {
-//        let constraints = [
-//            collectionView.topAnchor.constraint(equalTo: topAnchor),
-//            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
-//            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
-//            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
-//        ]
-//        NSLayoutConstraint.activate(constraints)
-        
-        addConstraintsWithFormat("H:|[v0]|", views: collectionView)
-        addConstraintsWithFormat("V:|[v0]|", views: collectionView)
+        let constraints = [
+            collectionView.topAnchor.constraint(equalTo: topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+        ]
+        NSLayoutConstraint.activate(constraints)                
         
     }
     
@@ -53,9 +55,9 @@ class MenuBarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource,
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MenuCellView
         
-        cell.imageView.image = UIImage(named: imageButtons[indexPath.row])
+        let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MenuCellView
+        cell.imageView.image = UIImage(named: imageButtons[indexPath.row])?.withRenderingMode(.alwaysTemplate)
         return cell
     }
     
@@ -77,8 +79,15 @@ class MenuCellView: BaseCell {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.image = UIImage(named: "home")
+        iv.tintColor = UIColor.rgb(red: 91, green: 14, blue: 13)
         return iv
     }()
+    
+    override var isSelected: Bool {
+        didSet {
+            imageView.tintColor = isSelected ? .white : UIColor.rgb(red: 91, green: 14, blue: 13)
+        }
+    }
     
     override func setupViews() {
         super.setupViews()
