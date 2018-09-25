@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		185BB762215A492A0093CF76 /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185BB761215A492A0093CF76 /* CustomImageView.swift */; };
 		188D73592138EE330008D5B0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188D73582138EE330008D5B0 /* AppDelegate.swift */; };
 		188D735B2138EE330008D5B0 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188D735A2138EE330008D5B0 /* HomeViewController.swift */; };
 		188D735E2138EE330008D5B0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 188D735C2138EE330008D5B0 /* Main.storyboard */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		185BB761215A492A0093CF76 /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
 		188D73552138EE330008D5B0 /* WeTubeFaking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeTubeFaking.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		188D73582138EE330008D5B0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		188D735A2138EE330008D5B0 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 			children = (
 				188D736D213AC4730008D5B0 /* UIView+Custom.swift */,
 				188D7374213BA1BE0008D5B0 /* UIColor+Custom.swift */,
+				185BB761215A492A0093CF76 /* CustomImageView.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -197,6 +200,7 @@
 				188D735B2138EE330008D5B0 /* HomeViewController.swift in Sources */,
 				188D7377213CBF970008D5B0 /* BaseCell.swift in Sources */,
 				188D73592138EE330008D5B0 /* AppDelegate.swift in Sources */,
+				185BB762215A492A0093CF76 /* CustomImageView.swift in Sources */,
 				18FF4DCD213F568000FB6642 /* ChannelModel.swift in Sources */,
 				188D7373213B9E390008D5B0 /* MenuBarView.swift in Sources */,
 			);

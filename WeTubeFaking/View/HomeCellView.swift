@@ -17,8 +17,8 @@ class HomeCellView: BaseCell {
         }
     }
     
-    let thumbnailImageView: UIImageView = {
-        let imageView = UIImageView()
+    let thumbnailImageView: CustomImageView = {
+        let imageView = CustomImageView()
         imageView.backgroundColor = .blue
         imageView.image = UIImage(named: "taylor_swift_vevo")
         imageView.contentMode = .scaleAspectFill
@@ -27,13 +27,14 @@ class HomeCellView: BaseCell {
         return imageView
     }()
     
-    let userProfileImageView: UIImageView = {
-        let imageView = UIImageView()
+    let userProfileImageView: CustomImageView = {
+        let imageView = CustomImageView()
         imageView.backgroundColor = .green
         imageView.image = UIImage(named: "marcos_user_profile")
         imageView.layer.cornerRadius = 22
         imageView.layer.masksToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
@@ -78,11 +79,8 @@ class HomeCellView: BaseCell {
         titleLabel.text = video?.title
         
         setupThumbnailImage()
-        thumbnailImageView.image = UIImage(named: (video?.thumbnail)!)
+        setupProfileImage()
         
-        if let profileImageName = video?.channel?.profileImageName {
-            userProfileImageView.image = UIImage(named: profileImageName)
-        }
         
         if let channelName = video?.channel?.name, let numberOfViews = video?.numberOfViews {
             let numberFormatter = NumberFormatter()
@@ -108,21 +106,15 @@ class HomeCellView: BaseCell {
         }
     }
     
+    fileprivate func setupProfileImage() {
+        if let profileImageURL = video?.channel?.profileImageName {
+            self.userProfileImageView.loadImage(urlString: profileImageURL)
+        }
+    }
+    
     fileprivate func setupThumbnailImage() {
         if let thumbnailURL = video?.thumbnail {
-            
-            let url = URL(string: thumbnailURL)
-            URLSession.shared.dataTask(with: url!) { (data, response, error) in
-                if error != nil {
-                    print(error!)
-                }
-                
-                DispatchQueue.main.async {
-                    self.thumbnailImageView.image = UIImage(data: data!)
-                }
-            }.resume()
-            
-            print(thumbnailURL)
+            self.thumbnailImageView.loadImage(urlString: thumbnailURL)
         }
     }
     

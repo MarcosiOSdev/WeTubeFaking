@@ -68,7 +68,7 @@ class HomeViewController: UICollectionViewController {
         
         URLSession.shared.dataTask(with: url!) { (data, response, error) in
             if error != nil {
-                print(error)
+                print(error ?? "")
                 return
             }
             do {
@@ -79,17 +79,26 @@ class HomeViewController: UICollectionViewController {
                     let title = dict["title"] as? String
                     let thumbnail = dict["thumbnail_image_name"] as? String
                     
-                    let video = VideoModel(title: title!, thumbnail: thumbnail!, numberOfViews: 2, uploadDate: nil, channel: nil)
+                    let channelDictionary = dict["channel"] as! [String: AnyObject]
+                    var channel = ChannelModel()
+                    channel.name = channelDictionary["name"] as? String
+                    channel.profileImageName = channelDictionary["profile_image_name"] as?  String
+                    
+                    
+                    let video = VideoModel(title: title!, thumbnail: thumbnail!, numberOfViews: 2, uploadDate: nil, channel: channel)
                     self.videos?.append(video)
                 }
                 
-                self.collectionView?.reloadData()
+                DispatchQueue.main.async {
+                    self.collectionView?.reloadData()
+                }
                 
             } catch let jsonError {
                 print(jsonError)
             }
             let str = String(data: data!, encoding: String.Encoding.utf8)
-            print(str)
+            print(str ?? "")
+            self.collectionView?.reloadData()
         }.resume()
         
         
