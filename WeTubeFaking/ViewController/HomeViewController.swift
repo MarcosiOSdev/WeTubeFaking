@@ -13,31 +13,31 @@ class HomeViewController: UICollectionViewController {
     let cellId = "HomeCellView"
     let titleInViewController = "MarcosTube"
     var videos: [VideoModel]?
-//    let videos: [VideoModel] = {
-//
-//        let channel = ChannelModel(name: "Marcos", profileImageName: "marcos_user_profile")
-//
-//        let taylorVideo = VideoModel(title: "Taylor Swift - Bad Blood featuring Kendrick Lamar", thumbnail: "taylor_swift_vevo", numberOfViews: 1231312, uploadDate: nil, channel: channel)
-//
-//        let anittaVideo = VideoModel(title: "Anitta - Tudo Bem", thumbnail: "fica-tudo-bem-aniita", numberOfViews: 1231312, uploadDate: nil, channel: channel)
-//
-//        let maroon5Video = VideoModel(title: "Maroon 5 - Sugar", thumbnail: "sugar-maroon5", numberOfViews: 1231312, uploadDate: nil, channel: channel)
-//
-//        let brunoMarsVideo = VideoModel(title: "Bruno Mars - Uptown Fuck", thumbnail: "uptown-bruno-mars", numberOfViews: 1231312, uploadDate: nil, channel: channel)
-//
-//        return [taylorVideo, anittaVideo, maroon5Video, brunoMarsVideo]
-//    }()
+    
+    lazy var settingLauncherView: SettingLauncherView = {
+        let view = SettingLauncherView()
+        view.delegate = self
+        return view
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchVideos()
         setupNavigation()
         setupMenuBar()
+        
+        
         collectionView?.backgroundColor = .white
         collectionView?.register(HomeCellView.self, forCellWithReuseIdentifier: cellId)
         
         //top down because of menubar... top start at 50
-        collectionView?.contentInset = UIEdgeInsetsMake(50, 0, 0, 0)
-        collectionView?.scrollIndicatorInsets = UIEdgeInsetsMake(50, 0, 0, 0)
+        collectionView?.contentInset = UIEdgeInsets.init(top: 50, left: 0, bottom: 0, right: 0)
+        collectionView?.scrollIndicatorInsets = UIEdgeInsets.init(top: 50, left: 0, bottom: 0, right: 0)
+    }
+    
+    //StatusBar com cor branca
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
     fileprivate func setupNavigation() {
@@ -61,51 +61,16 @@ class HomeViewController: UICollectionViewController {
     }
     
     func fetchVideos() {
-        print("Fetching ...")
-        //let url = URL(string: "http://localhost:3000/youtube")
-        
-        let url = URL(string: "https://s3-us-west-2.amazonaws.com/youtubeassets/home.json")
-        
-        URLSession.shared.dataTask(with: url!) { (data, response, error) in
-            if error != nil {
-                print(error ?? "")
-                return
+        ServiceAPI.shared.fetchingVideos { videos in
+            self.videos = videos
+            DispatchQueue.main.async {
+                self.collectionView?.reloadData()
             }
-            do {
-                let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers)
-                self.videos = [VideoModel]()
-                for dict in json as! [[String: AnyObject]] {
-                    
-                    let title = dict["title"] as? String
-                    let thumbnail = dict["thumbnail_image_name"] as? String
-                    
-                    let channelDictionary = dict["channel"] as! [String: AnyObject]
-                    var channel = ChannelModel()
-                    channel.name = channelDictionary["name"] as? String
-                    channel.profileImageName = channelDictionary["profile_image_name"] as?  String
-                    
-                    
-                    let video = VideoModel(title: title!, thumbnail: thumbnail!, numberOfViews: 2, uploadDate: nil, channel: channel)
-                    self.videos?.append(video)
-                }
-                
-                DispatchQueue.main.async {
-                    self.collectionView?.reloadData()
-                }
-                
-            } catch let jsonError {
-                print(jsonError)
-            }
-            let str = String(data: data!, encoding: String.Encoding.utf8)
-            print(str ?? "")
-            self.collectionView?.reloadData()
-        }.resume()
-        
-        
+        }
     }
     
     @objc func handleMore() {
-        print("MORE MORE")
+        self.settingLauncherView.showSettings()
     }
     
     @objc func handleSearch() {
@@ -119,13 +84,34 @@ class HomeViewController: UICollectionViewController {
     }()
     
     fileprivate func setupMenuBar() {
+        
+        
+        self.navigationController?.hidesBarsOnSwipe = true
+        
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = menuBarView.backgroundColor
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(backgroundView)        
         view.addSubview(menuBarView)
-        menuBarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        
+        
+        backgroundView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        backgroundView.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        if #available(iOS 11, *) {
+            menuBarView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        } else {
+            menuBarView.topAnchor.constraint(equalTo: topLayoutGuide.topAnchor).isActive = true
+        }
         menuBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         menuBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         menuBarView.heightAnchor.constraint(equalToConstant: 50).isActive = true
     
     }
+    
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
@@ -149,9 +135,23 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
         
         let perfectRatio: CGFloat = 9 / 16
         let height: CGFloat = (view.frame.width - 16 - 16) * perfectRatio
-        let sumAllSizeView:CGFloat = 16 + 88
+        let sumAllSizeView:CGFloat = 16 + 88 + 10
         
         return CGSize(width: view.frame.width, height: height + sumAllSizeView)
     }
 }
 
+extension HomeViewController: SettingLauncherDelegate {
+    func selected(setting: SettingLauncherModel) {
+        let dummyVC = UIViewController()
+        self.navigationController?.pushViewController(dummyVC, animated: true)
+        
+        dummyVC.navigationItem.title = setting.name.rawValue
+        dummyVC.navigationController?.navigationBar.tintColor = .white
+        dummyVC.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white] 
+        dummyVC.view.backgroundColor = .white
+        
+    }
+    
+    
+}

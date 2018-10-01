@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
@@ -28,16 +28,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         
-        
-		//StatusBar with white color and background dark red
-        application.statusBarStyle = .lightContent
-        let statusBarBackground = UIView()
-        statusBarBackground.backgroundColor = UIColor.rgb(red: 194, green: 31, blue: 31)
-        window?.addSubview(statusBarBackground)
-        window?.addConstraintsWithFormat("H:|[v0]|", views: statusBarBackground)
-        window?.addConstraintsWithFormat("V:|[v0(20)]|", views: statusBarBackground)
-        
-        //TODO: `safeAreaLayoutGuide` se iOS >= 11, `topLayoutGuide`
+        //Logic is in extension, paint status with red
+        UIApplication.shared.statusBarView?.backgroundColor = .red
+
         return true
     }
 

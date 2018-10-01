@@ -56,9 +56,10 @@ class HomeCellView: BaseCell {
     let subtitleTextView: UITextView = {
         let textView = UITextView()
         textView.text = "TaylorSwiftVEVO - 1.604.684.000 visualizações - 2 anos atras"
-        textView.textContainerInset = UIEdgeInsetsMake(0, -4, 0, 0)
+        textView.textContainerInset = UIEdgeInsets.init(top: 0, left: -4, bottom: 0, right: 0)
         textView.textColor = .lightGray
         textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.isEditable = false
         return textView
     }()
 
@@ -77,10 +78,8 @@ class HomeCellView: BaseCell {
     
     func setupField() {
         titleLabel.text = video?.title
-        
         setupThumbnailImage()
         setupProfileImage()
-        
         
         if let channelName = video?.channel?.name, let numberOfViews = video?.numberOfViews {
             let numberFormatter = NumberFormatter()
@@ -96,7 +95,7 @@ class HomeCellView: BaseCell {
             let size = CGSize(width: frame.width - 16 - 44 - 8 - 1, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesFontLeading)
             
-            let estimatedRect = NSString(string: title).boundingRect(with: size, options: options, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)], context: nil)
+            let estimatedRect = NSString(string: title).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)], context: nil)
             
             if estimatedRect.size.height > 15 {
                 titleLabelHeightConstraint?.constant = 44

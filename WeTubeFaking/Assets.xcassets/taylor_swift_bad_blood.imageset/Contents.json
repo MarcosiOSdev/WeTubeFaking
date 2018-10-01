@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "taylor_swift_bad_blood.jpg",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "trending@2x.png",
       "scale" : "2x"
     },
     {

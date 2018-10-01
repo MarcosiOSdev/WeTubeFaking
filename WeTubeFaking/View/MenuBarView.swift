@@ -20,12 +20,22 @@ class MenuBarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource,
         return cv
     }()
     
+    let separatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    var leadingConstraintSeparator: NSLayoutConstraint?
     let cellId = "MenuBarId"
     let imageButtons = ["home", "play", "albums", "account"]
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(collectionView)
+        addSubview(separatorView)
+        
         collectionView.register(MenuCellView.self, forCellWithReuseIdentifier: cellId)
         
         //Seleciona o primeiro tabbar
@@ -36,26 +46,41 @@ class MenuBarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource,
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("init(coder:) has not been implemented. Dont use Storyboard")
     }
     
     fileprivate func setupConstraints() {
+        self.leadingConstraintSeparator = separatorView.leadingAnchor.constraint(equalTo: self.leadingAnchor)
         let constraints = [
+            //Collections
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            
+            //Separators
+            separatorView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1/4),
+            separatorView.heightAnchor.constraint(equalToConstant: 6),
+            self.leadingConstraintSeparator,
+            separatorView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
         ]
-        NSLayoutConstraint.activate(constraints)                
         
+        NSLayoutConstraint.activate(constraints as! [NSLayoutConstraint])
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let x = CGFloat(indexPath.item) * collectionView.frame.width / CGFloat(imageButtons.count)
+        self.leadingConstraintSeparator?.constant = x
+        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            self.layoutIfNeeded()
+        }, completion: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return self.imageButtons.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MenuCellView
         cell.imageView.image = UIImage(named: imageButtons[indexPath.row])?.withRenderingMode(.alwaysTemplate)
         return cell
@@ -63,7 +88,8 @@ class MenuBarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource,
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: frame.width / 4 , height: frame.height)
+        let sizeButtons = CGFloat(imageButtons.count)
+        return CGSize(width: frame.width / sizeButtons , height: frame.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -96,17 +122,7 @@ class MenuCellView: BaseCell {
         imageView.widthAnchor.constraint(equalToConstant: 28).isActive = true
         imageView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         imageView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        
-        
     }
-    
-    func constraints() {
-        addConstraintsWithFormat("H:|[v0(28)]|", views: imageView)
-        addConstraintsWithFormat("V:|[v0(28)]|", views: imageView)
-        addConstraint(NSLayoutConstraint(item: imageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0))
-        addConstraint(NSLayoutConstraint(item: imageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
-    }
-    
 }
 
 
