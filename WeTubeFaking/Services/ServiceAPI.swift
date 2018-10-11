@@ -11,45 +11,49 @@ import UIKit
 class ServiceAPI: NSObject {
     
     static let shared = ServiceAPI()
+    let baseUrl = "https://s3-us-west-2.amazonaws.com/youtubeassets"//"http://localhost:3000/youtube"
+    
     private override init() {
         super.init()
     }
     
-    func fetchingVideos(completed: @escaping (_ videos: [VideoModel]) -> Void ){
-        
-        let url = URL(string: "http://localhost:3000/youtube")
-        
+    func getFeeds(urlString: String, completed: @escaping (_ videos: [VideoModel]) -> Void) {
+        let url = URL(string: urlString)
         URLSession.shared.dataTask(with: url!) { (data, response, error) in
+            
+            //There arent error handling
+            let returnError = [VideoModel]()
+            
             if error != nil {
                 print(error ?? "")
+                completed(returnError)
                 return
             }
             do {
-                let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers)
-                var videos = [VideoModel]()
-                for dict in json as! [[String: AnyObject]] {
-                    
-                    let title = dict["title"] as? String
-                    let thumbnail = dict["thumbnail_image_name"] as? String
-                    
-                    let channelDictionary = dict["channel"] as! [String: AnyObject]
-                    var channel = ChannelModel()
-                    channel.name = channelDictionary["name"] as? String
-                    channel.profileImageName = channelDictionary["profile_image_name"] as?  String
-                    let video = VideoModel(title: title!, thumbnail: thumbnail!, numberOfViews: 2, uploadDate: nil, channel: channel)
-                    videos.append(video)
-                }
-                
+                guard let responseData = data else { return }
+                let videos:[VideoModel] = try JSONDecoder().decode([VideoModel].self, from: responseData)
                 completed(videos)
                 
             } catch let jsonError {
                 print(jsonError)
+                completed(returnError)
             }
-            
-            let str = String(data: data!, encoding: String.Encoding.utf8)
-            print(str ?? "")
-            }.resume()
+        }.resume()
         
     }
-
+    
+    func fetchingVideos(completed: @escaping (_ videos: [VideoModel]) -> Void ){
+        let url = self.baseUrl + "/home.json"
+        getFeeds(urlString: url, completed: completed)
+    }
+    
+    func trendingFetchingVideos(completed: @escaping (_ videos: [VideoModel]) -> Void ){
+        let url = self.baseUrl + "/trending.json"
+        getFeeds(urlString: url, completed: completed)
+    }
+    
+    func subscribleFetchingVideos(completed: @escaping (_ videos: [VideoModel]) -> Void ) {
+        let url = self.baseUrl + "/subscriptions.json"//"/subscrible"
+        getFeeds(urlString: url, completed: completed)
+    }
 }

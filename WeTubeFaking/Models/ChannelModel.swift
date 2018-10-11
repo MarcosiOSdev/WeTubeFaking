@@ -8,8 +8,13 @@
 
 import Foundation
 
-struct ChannelModel {
+struct ChannelModel: Codable {
     var name: String?
-    var profileImageName: String?
+    var profileImageName: String? //profile_image_name
+    
+    enum CodingKeys: String, CodingKey {
+        case profileImageName = "profile_image_name"
+        case name
+    }
     
 }

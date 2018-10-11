@@ -10,9 +10,11 @@ import UIKit
 
 class HomeViewController: UICollectionViewController {
 
-    let cellId = "HomeCellView"
-    let titleInViewController = "MarcosTube"
-    var videos: [VideoModel]?
+    let cellId = "homeCellView"
+    let trendingCellId = "trendingCellId"
+    let subscribleCellId = "subscribleCellId"
+    let titles = ["Home", "Mais vistos", "Subscritos", "Perfil"]
+    
     
     lazy var settingLauncherView: SettingLauncherView = {
         let view = SettingLauncherView()
@@ -20,35 +22,25 @@ class HomeViewController: UICollectionViewController {
         return view
     }()
     
+    lazy var menuBarView: MenuBarView = {
+        let mb = MenuBarView()
+        mb.translatesAutoresizingMaskIntoConstraints = false
+        mb.delegate = self
+        return mb
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchVideos()
         setupNavigation()
         setupMenuBar()
-        
-        
-        collectionView?.backgroundColor = .white
-        collectionView?.register(HomeCellView.self, forCellWithReuseIdentifier: cellId)
-        
-        //top down because of menubar... top start at 50
-        collectionView?.contentInset = UIEdgeInsets.init(top: 50, left: 0, bottom: 0, right: 0)
-        collectionView?.scrollIndicatorInsets = UIEdgeInsets.init(top: 50, left: 0, bottom: 0, right: 0)
+        setupCollectionView()
     }
     
-    //StatusBar com cor branca
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
     
     fileprivate func setupNavigation() {
-        navigationItem.title = titleInViewController
-        navigationController?.navigationBar.isTranslucent = false
         
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.width - 32, height: view.frame.height))
-        titleLabel.text = titleInViewController
-        titleLabel.textColor = .white
-        titleLabel.font = UIFont.systemFont(ofSize: 20)
-        navigationItem.titleView = titleLabel
+        navigationController?.navigationBar.isTranslucent = false
+        setTitle(index: 0)
         
         //Right Buttons
         let searchImage = UIImage(named: "search")?.withRenderingMode(.alwaysOriginal)
@@ -60,13 +52,62 @@ class HomeViewController: UICollectionViewController {
         navigationItem.rightBarButtonItems = [moreBarButton, searchBarButton]
     }
     
-    func fetchVideos() {
-        ServiceAPI.shared.fetchingVideos { videos in
-            self.videos = videos
-            DispatchQueue.main.async {
-                self.collectionView?.reloadData()
-            }
+    fileprivate func setupCollectionView() {
+        
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .horizontal
+            layout.minimumLineSpacing = 0
         }
+        collectionView.isPagingEnabled = true
+        collectionView?.backgroundColor = .white
+        
+        //top down because of menubar... top start at 50
+        collectionView?.contentInset = UIEdgeInsets.init(top: 50, left: 0, bottom: 0, right: 0)
+        collectionView?.scrollIndicatorInsets = UIEdgeInsets.init(top: 50, left: 0, bottom: 0, right: 0)
+        
+        collectionView.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(TrendingCell.self, forCellWithReuseIdentifier: trendingCellId)
+        collectionView.register(SubscribleCell.self, forCellWithReuseIdentifier: subscribleCellId)
+    }
+    
+    fileprivate func setupMenuBar() {
+        setupMenuBarBrain()
+//        self.navigationController?.hidesBarsOnSwipe = true
+//
+//        view.addSubview(menuBarView)
+//        if #available(iOS 11, *) {
+//            menuBarView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+//        } else {
+//            menuBarView.topAnchor.constraint(equalTo: topLayoutGuide.topAnchor).isActive = true
+//        }
+////        menuBarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+//        menuBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+//        menuBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+//        menuBarView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
+    
+    fileprivate func setupMenuBarBrain() {
+        navigationController?.hidesBarsOnSwipe = true
+        
+        let redView = UIView()
+        redView.backgroundColor = UIColor.rgb(red: 230, green: 32, blue: 31)
+        view.addSubview(redView)
+        view.addConstraintsWithFormat("H:|[v0]|", views: redView)
+        view.addConstraintsWithFormat("V:[v0(50)]", views: redView)
+        
+        view.addSubview(menuBarView)
+        view.addConstraintsWithFormat("H:|[v0]|", views: menuBarView)
+        view.addConstraintsWithFormat("V:[v0(50)]", views: menuBarView)
+        
+        menuBarView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
+    }
+    
+    func setTitle(index: Int) {
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.width - 32, height: view.frame.height))
+        titleLabel.text = "     \(self.titles[index])"
+        titleLabel.textColor = .white
+        titleLabel.font = UIFont.systemFont(ofSize: 20)
+        navigationItem.titleView = titleLabel
     }
     
     @objc func handleMore() {
@@ -74,70 +115,56 @@ class HomeViewController: UICollectionViewController {
     }
     
     @objc func handleSearch() {
-        print("HANDLE")
-    }
-    
-    let menuBarView: MenuBarView = {
-        let mb = MenuBarView()
-        mb.translatesAutoresizingMaskIntoConstraints = false
-        return mb
-    }()
-    
-    fileprivate func setupMenuBar() {
-        
-        
-        self.navigationController?.hidesBarsOnSwipe = true
-        
-        let backgroundView = UIView()
-        backgroundView.backgroundColor = menuBarView.backgroundColor
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(backgroundView)        
-        view.addSubview(menuBarView)
-        
-        
-        backgroundView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        backgroundView.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        if #available(iOS 11, *) {
-            menuBarView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        } else {
-            menuBarView.topAnchor.constraint(equalTo: topLayoutGuide.topAnchor).isActive = true
-        }
-        menuBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        menuBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        menuBarView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-    
-    }
-    
-
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        return videos != nil ? (videos?.count)! : 0
+        settingLauncherView.showSettings()
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! HomeCellView
-        cell.video = videos?[indexPath.row]
+        
+        let indentifierCell: String
+        if indexPath.item == 1 {
+            indentifierCell = trendingCellId
+        } else if indexPath.item == 2 {
+            indentifierCell = subscribleCellId
+        } else {
+            indentifierCell = cellId
+        }        
+        
+        let cell: FeedCell = collectionView.dequeueReusableCell(withReuseIdentifier: indentifierCell, for: indexPath) as! FeedCell
+        cell.backgroundColor = .white
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.menuBarView.imageButtons.count
     }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        //print(scrollView.contentOffset.x)
+        menuBarView.leadingConstraintSeparator?.constant = scrollView.contentOffset.x / CGFloat(menuBarView.imageButtons.count)
+    }
+
+    override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let index = Int(targetContentOffset.pointee.x / view.frame.width)
+        self.menuBarView.selectMenu(index)
+        self.setTitle(index: index)
+        //print(index)
+    }
+    
+    
+
 }
 
 
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let perfectRatio: CGFloat = 9 / 16
-        let height: CGFloat = (view.frame.width - 16 - 16) * perfectRatio
-        let sumAllSizeView:CGFloat = 16 + 88 + 10
-        
-        return CGSize(width: view.frame.width, height: height + sumAllSizeView)
+        return CGSize(width: view.frame.width, height: view.frame.height)
+    }
+}
+
+extension HomeViewController: MenuBarDelegate {
+    func selectedMenuRow(indexPath: IndexPath) {
+        self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
+        self.setTitle(index: indexPath.item)
     }
 }
 
@@ -152,6 +179,4 @@ extension HomeViewController: SettingLauncherDelegate {
         dummyVC.view.backgroundColor = .white
         
     }
-    
-    
 }

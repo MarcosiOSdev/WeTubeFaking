@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol MenuBarDelegate {
+    func selectedMenuRow(indexPath: IndexPath)
+}
+
 class MenuBarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     lazy var collectionView: UICollectionView = {
@@ -30,6 +34,7 @@ class MenuBarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource,
     var leadingConstraintSeparator: NSLayoutConstraint?
     let cellId = "MenuBarId"
     let imageButtons = ["home", "play", "albums", "account"]
+    var delegate: MenuBarDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -68,12 +73,20 @@ class MenuBarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource,
         NSLayoutConstraint.activate(constraints as! [NSLayoutConstraint])
     }
     
+    func selectMenu(_ index: Int){
+        let indexPath = IndexPath(item: index, section: 0)
+        self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let x = CGFloat(indexPath.item) * collectionView.frame.width / CGFloat(imageButtons.count)
-        self.leadingConstraintSeparator?.constant = x
-        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-            self.layoutIfNeeded()
-        }, completion: nil)
+        
+        delegate?.selectedMenuRow(indexPath: indexPath)
+        
+//        let x = CGFloat(indexPath.item) * collectionView.frame.width / CGFloat(imageButtons.count)
+//        self.leadingConstraintSeparator?.constant = x
+//        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+//            self.layoutIfNeeded()
+//        }, completion: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
