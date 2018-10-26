@@ -11,7 +11,8 @@ import UIKit
 class ServiceAPI: NSObject {
     
     static let shared = ServiceAPI()
-    let baseUrl = "http://localhost:3000/youtube" //"https://s3-us-west-2.amazonaws.com/youtubeassets"//
+//    let baseUrl = "http://localhost:3000/youtube"
+    let baseUrl = "https://s3-us-west-2.amazonaws.com/youtubeassets"
     
     private override init() {
         super.init()
@@ -43,17 +44,17 @@ class ServiceAPI: NSObject {
     }
     
     func fetchingVideos(completed: @escaping (_ videos: [VideoModel]) -> Void ){
-        let url = self.baseUrl + "/home"
+        let url = self.baseUrl + "/home.json"
         getFeeds(urlString: url, completed: completed)
     }
     
     func trendingFetchingVideos(completed: @escaping (_ videos: [VideoModel]) -> Void ){
-        let url = self.baseUrl + "/trending"
+        let url = self.baseUrl + "/trending.json"
         getFeeds(urlString: url, completed: completed)
     }
     
     func subscribleFetchingVideos(completed: @escaping (_ videos: [VideoModel]) -> Void ) {
-        let url = self.baseUrl + "/subscriptions"
+        let url = self.baseUrl + "/subscriptions.json"
         getFeeds(urlString: url, completed: completed)
     }
 }

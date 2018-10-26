@@ -115,7 +115,7 @@ class HomeViewController: UICollectionViewController {
     }
     
     @objc func handleSearch() {
-        settingLauncherView.showSettings()
+        self.settingLauncherView.showSettings()
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -131,6 +131,7 @@ class HomeViewController: UICollectionViewController {
         
         let cell: FeedCell = collectionView.dequeueReusableCell(withReuseIdentifier: indentifierCell, for: indexPath) as! FeedCell
         cell.backgroundColor = .white
+        cell.delegate = self
         return cell
     }
     
@@ -179,4 +180,23 @@ extension HomeViewController: SettingLauncherDelegate {
         dummyVC.view.backgroundColor = .white
         
     }
+}
+
+extension HomeViewController: FeedCellDelegate {
+    
+    func selectedRow(video: VideoModel) {
+        let videoLauncherVC = VideoLauncherViewController()
+        //self.navigationController?.pushViewController(videoLauncherVC, animated: true)
+        
+        self.present(videoLauncherVC, animated: true, completion: nil)
+        
+//        self.addChild(videoLauncherVC)
+//        videoLauncherVC.view.frame = self.view.frame
+//        
+//        self.view.addSubview(videoLauncherVC.view)
+//        videoLauncherVC.didMove(toParent: self)
+        
+    }
+    
+    
 }

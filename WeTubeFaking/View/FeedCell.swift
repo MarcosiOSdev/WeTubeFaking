@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol FeedCellDelegate {
+    func selectedRow(video: VideoModel)
+}
+
+
 class FeedCell: BaseCell, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     let feedCellId = "feedCellId"
@@ -23,7 +28,7 @@ class FeedCell: BaseCell, UICollectionViewDelegate, UICollectionViewDataSource, 
     }()
     
     var videos: [VideoModel]?
-    
+    var delegate: FeedCellDelegate?
 
     override func setupViews() {
         super.setupViews()
@@ -74,5 +79,10 @@ class FeedCell: BaseCell, UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return videos?.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let video = self.videos?[indexPath.row] else { return }
+        delegate?.selectedRow(video: video)
     }
 }
