@@ -10,6 +10,10 @@ import UIKit
 import AVFoundation
 import AVKit
 
+protocol VideoPlayerDelegate {
+    func swipeDownTapped()
+}
+
 class VideoPlayerView: UIView, AVPlayerViewControllerDelegate {
     
     
@@ -73,16 +77,27 @@ class VideoPlayerView: UIView, AVPlayerViewControllerDelegate {
         return slider
     }()
     
+    lazy var buttonSwipeDown: UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(named: "arrow_down")
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.addTarget(self, action: #selector(swipeDown), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+        
+    }()
     
+    var delegate: VideoPlayerDelegate?
     
-   
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         //setupGradiantColor()
-        setupVideoPlay()
+        
         contentView.frame = frame
         addSubview(contentView)
+        setupVideoPlay()
         
         contentView.addSubview(self.indicator)
         indicator.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
@@ -114,17 +129,24 @@ class VideoPlayerView: UIView, AVPlayerViewControllerDelegate {
         self.timeSlider.leadingAnchor.constraint(equalTo: startTimeVideoLabel.trailingAnchor, constant: 4).isActive = true
         
         
+        contentView.addSubview(self.buttonSwipeDown)
+        self.buttonSwipeDown.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        self.buttonSwipeDown.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        self.buttonSwipeDown.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
+        self.buttonSwipeDown.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8).isActive = true
+        
         backgroundColor = .black
         
     }
     
     var isPlaying = false
     var player: AVPlayer?
+    var playerLayer: AVPlayerLayer?
     func setupVideoPlay() {
         guard let url = URL(string: urlString) else { return }
         player = AVPlayer(url: url)
-        let layer = AVPlayerLayer(player: player)
-        self.layer.addSublayer(layer)
+        playerLayer = AVPlayerLayer(player: player)
+        self.layer.addSublayer(playerLayer!)
         layer.frame = self.frame
         player?.play()
         player?.addObserver(self, forKeyPath: self.observerPlayer, options: .new, context: nil)
@@ -143,8 +165,11 @@ class VideoPlayerView: UIView, AVPlayerViewControllerDelegate {
             let durationSeconds = CMTimeGetSeconds(durations)
             self.timeSlider.value = Float(seconds / durationSeconds)
         })
-        
-        
+    }
+    
+    func changeFramePlayer() {
+        self.playerLayer?.frame = self.frame
+        self.layer.frame = self.frame
     }
     
     func setupGradiantColor() {
@@ -155,11 +180,7 @@ class VideoPlayerView: UIView, AVPlayerViewControllerDelegate {
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        
-        //func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        
         if keyPath == self.observerPlayer {
-            //            print(player?.status ?? "aahh =(")
             
             if !self.isPlaying {
                 self.indicator.stopAnimating()
@@ -176,6 +197,11 @@ class VideoPlayerView: UIView, AVPlayerViewControllerDelegate {
                 }
             }
         }
+    }
+    
+    //MARK: - Handle from Selectors
+    @objc func swipeDown() {
+        delegate?.swipeDownTapped()
     }
     
     @objc func handlePlayPause() {

@@ -186,16 +186,9 @@ extension HomeViewController: FeedCellDelegate {
     
     func selectedRow(video: VideoModel) {
         let videoLauncherVC = VideoLauncherViewController()
-        //self.navigationController?.pushViewController(videoLauncherVC, animated: true)
-        
+        videoLauncherVC.view.frame = UIApplication.shared.keyWindow!.frame
+        videoLauncherVC.modalPresentationStyle = .overFullScreen
         self.present(videoLauncherVC, animated: true, completion: nil)
-        
-//        self.addChild(videoLauncherVC)
-//        videoLauncherVC.view.frame = self.view.frame
-//        
-//        self.view.addSubview(videoLauncherVC.view)
-//        videoLauncherVC.didMove(toParent: self)
-        
     }
     
     

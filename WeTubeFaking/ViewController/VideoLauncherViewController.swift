@@ -21,28 +21,61 @@ class VideoLauncherViewController: UIViewController {
     
     var mediaPlayerView : VideoPlayerView?
     
+    //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+        UIApplication.shared.statusBarView?.isHidden = true
+        self.view.backgroundColor = .clear
+        self.view.isOpaque = false        
         
+        setupMediaPlayer()
+        self.view.addSubview(self.tallContainerView)
+        self.view.addSubview(self.mediaPlayerView!)
+    }
+   
+    
+    func setupMediaPlayer() {
+        guard let keyWindow = UIApplication.shared.keyWindow else {return}
         //Aspect Radio HD = * 9 / 16
-        let videoPlayerHeight = self.view.frame.width * 9 / 16
-        mediaPlayerView = VideoPlayerView(frame: CGRect(x: 0, y: 0, width: self.view.frame.height, height: videoPlayerHeight))
+        let videoPlayerHeight = keyWindow.frame.width * 9 / 16
+        let videoPlayerFrame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: videoPlayerHeight)
         
-        self.view.addSubview(tallContainerView)
-        self.view.addSubview(mediaPlayerView!)
+        self.mediaPlayerView = VideoPlayerView(frame: videoPlayerFrame)
+        self.mediaPlayerView?.delegate = self
         
-        self.navigationController?.isNavigationBarHidden = true
-        
+        // Configure Gesture Recognizer
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeDown))
         let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeUp))
-
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeLeft))
         swipeDown.direction = .down
         swipeUp.direction = .up
-        mediaPlayerView!.addGestureRecognizer(swipeUp)
-        mediaPlayerView!.addGestureRecognizer(swipeDown)
-
+        swipeLeft.direction = .left
+        self.mediaPlayerView!.addGestureRecognizer(swipeUp)
+        self.mediaPlayerView!.addGestureRecognizer(swipeDown)
+        self.mediaPlayerView!.addGestureRecognizer(swipeLeft)
+        
     }
     
+    @objc func swipeLeft() {
+        if self.isMinimized! {
+            guard let mediaPlayerView = self.mediaPlayerView else { return }
+            
+            mediaPlayerView.player?.pause()
+            
+            let width = UIScreen.main.bounds.width - UIScreen.main.bounds.width / 2
+            let x = width - mediaPlayerView.frame.width
+            let y = self.view.bounds.size.height - mediaPlayerView.frame.height
+            let newFrame:CGRect = CGRect(x: x, y: y, width: mediaPlayerView.frame.width, height: mediaPlayerView.frame.height)
+            
+            UIView.animate(withDuration: 0.5, animations: {
+                self.mediaPlayerView?.frame = newFrame
+            }) { _  in
+                self.presentingViewController?.dismiss(animated: true, completion: nil)
+            }
+            
+            
+        }
+    }
     
     @objc func swipeDown() {
         self.minimizeMp(minimized: true, animated: true)
@@ -52,33 +85,29 @@ class VideoLauncherViewController: UIViewController {
         self.minimizeMp(minimized: false, animated: true)
     }
     
-    lazy var isMinimized: Bool = {
-        return self.tallContainerView.frame.origin.y > 0
-    }()
-    
+    var isMinimized: Bool?
     func minimizeMp(minimized: Bool, animated:Bool) {
         var tallContainerFrame: CGRect
         var containerFrame: CGRect
         
         var tallContainerAlpha:CGFloat
-        
+        self.isMinimized = minimized
         if (minimized) {
-            let mpWidth:CGFloat = 160
-            let mpHeight:CGFloat = 90
+            let mpWidth:CGFloat = 200 // -20
+            let mpHeight:CGFloat = 110 //-20
             
-            let x = 320 - mpWidth
+            let width = UIScreen.main.bounds.width
+            let x = width - mpWidth
             let y = self.view.bounds.size.height - mpHeight
             
-            tallContainerFrame = CGRect(x: x, y: y, width: 320, height: self.view.bounds.size.height)
+            tallContainerFrame = CGRect(x: x, y: y, width: 370, height: self.view.bounds.size.height)
             containerFrame = CGRect(x: x, y: y, width: mpWidth, height: mpHeight)
             tallContainerAlpha = 0.0
             
         } else {
             tallContainerFrame = self.view.frame;
-            
             let videoPlayerHeight = self.view.frame.width * 9 / 16
             containerFrame = CGRect(x: 0, y: 0, width: self.view.frame.height, height: videoPlayerHeight)
-            
             tallContainerAlpha = 1.0
         }
         
@@ -88,12 +117,11 @@ class VideoLauncherViewController: UIViewController {
         UIView.animate(withDuration: duration) {
             self.tallContainerView.frame = tallContainerFrame
             self.mediaPlayerView!.frame = containerFrame
+            self.mediaPlayerView!.changeFramePlayer()
             self.tallContainerView.alpha = tallContainerAlpha
         }
         
     }
-    
-    
     
     func showVideoPlayer() {
         print("Showing your video player ...")
@@ -120,4 +148,10 @@ class VideoLauncherViewController: UIViewController {
         }
     }
     
+}
+
+extension VideoLauncherViewController: VideoPlayerDelegate {
+    func swipeDownTapped() {
+        self.swipeDown()
+    }
 }
