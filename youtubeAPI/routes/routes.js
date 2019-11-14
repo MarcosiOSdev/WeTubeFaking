@@ -126,7 +126,8 @@ var trendingResponse = [
     res.status(200).send({ message: 'Welcome to our restful API' });
   });
 
-  app.get("/youtube", function (req, res) {    
+  app.get("/youtube", function (req, res) {
+    console.log("Getting /youtube")
     res.status(200).send("/home or /trending or /subscrible");
   });
 

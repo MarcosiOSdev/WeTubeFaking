@@ -68,7 +68,8 @@ class SettingLauncherView: NSObject {
             UIView.animate(withDuration: 0.5) {
                 self.blackView.alpha = 1
                 self.collectionView.frame =
-                    CGRect(x: 0, y: y, width: self.collectionView.frame.width, height: heigthCollectionView)
+                    CGRect(x: 8, y: y, width: self.collectionView.frame.width - 16, height: heigthCollectionView)
+                self.collectionView.layer.cornerRadius = 10
             }
         }
     }

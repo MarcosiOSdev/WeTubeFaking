@@ -11,11 +11,14 @@ import UIKit
 class ServiceAPI: NSObject {
     
     static let shared = ServiceAPI()
-//    let baseUrl = "http://localhost:3000/youtube"
-    let baseUrl = "https://s3-us-west-2.amazonaws.com/youtubeassets"
-    
     private override init() {
         super.init()
+    }
+    
+    let isLocal = true
+    
+    var baseUrl: String {
+        return self.isLocal ? "http://localhost:3000/youtube" : "https://s3-us-west-2.amazonaws.com/youtubeassets"
     }
     
     func getFeeds(urlString: String, completed: @escaping (_ videos: [VideoModel]) -> Void) {
@@ -44,17 +47,20 @@ class ServiceAPI: NSObject {
     }
     
     func fetchingVideos(completed: @escaping (_ videos: [VideoModel]) -> Void ){
-        let url = self.baseUrl + "/home.json"
+        let home = self.isLocal ? "/home" : "/home.json"
+        let url = self.baseUrl + home
         getFeeds(urlString: url, completed: completed)
     }
     
     func trendingFetchingVideos(completed: @escaping (_ videos: [VideoModel]) -> Void ){
-        let url = self.baseUrl + "/trending.json"
+        let trending = self.isLocal ? "/trending" : "/trending.json"
+        let url = self.baseUrl + trending
         getFeeds(urlString: url, completed: completed)
     }
     
     func subscribleFetchingVideos(completed: @escaping (_ videos: [VideoModel]) -> Void ) {
-        let url = self.baseUrl + "/subscriptions.json"
+        let subscriptions = self.isLocal ? "/subscriptions" : "/subscriptions.json"
+        let url = self.baseUrl + subscriptions
         getFeeds(urlString: url, completed: completed)
     }
 }

@@ -13,6 +13,12 @@ class CustomImageView: UIImageView {
     
     var urlExist: String?
     
+    let urlSession = URLSession.shared
+    var operation: URLSessionDataTask?
+    func stopLoad() {
+        self.operation?.cancel()
+    }
+    
     func loadImage(urlString: String) {
         urlExist = urlString
         let url = URL(string: urlString)
@@ -23,18 +29,22 @@ class CustomImageView: UIImageView {
             return
         }
         
-        URLSession.shared.dataTask(with: url!) { (data, response, error) in
+        self.operation = urlSession.dataTask(with: url!) { (data, response, error) in
             if error != nil {
                 print(error!)
             }
             DispatchQueue.main.async {
-                let imageForCache = UIImage(data: data!)
-                if self.urlExist == urlString {
-                    self.image = imageForCache
+                if let dataResp = data, let imageForCache = UIImage(data: dataResp) {
+                    if self.urlExist == urlString {
+                        self.image = imageForCache
+                    }
+                    imageCache.setObject(imageForCache, forKey: urlString as AnyObject)
                 }
-                imageCache.setObject(imageForCache!, forKey: urlString as AnyObject)
+                
+                
             }
-            }.resume()
+        }
+        self.operation?.resume()
     }
     
 }
